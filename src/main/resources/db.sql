@@ -12,9 +12,9 @@ CREATE TABLE `users` (
 CREATE TABLE `resource` (
   `resource_id` int PRIMARY KEY AUTO_INCREMENT,
   `resource_type` int,
-  `image_url` varchar(255),
+  `image_url` longtext,
   `name` varchar(50),
-  `description` varchar(200),
+  `description` longtext,
   `year_publish` int,
   `num_chapter` int
 );
