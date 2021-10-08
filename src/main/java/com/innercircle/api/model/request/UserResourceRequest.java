@@ -1,13 +1,9 @@
 package com.innercircle.api.model.request;
+
 import java.time.LocalDateTime;
-
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import org.springframework.format.annotation.DateTimeFormat;
-
 import lombok.Getter;
 import lombok.Setter;
 
