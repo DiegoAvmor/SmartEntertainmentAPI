@@ -1,10 +1,7 @@
 package com.innercircle.api.model;
 
-import java.time.LocalDateTime;
 import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import lombok.Getter;
 import lombok.Setter;
 
