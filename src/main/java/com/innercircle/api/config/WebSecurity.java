@@ -31,7 +31,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable()
             .authorizeRequests()
                 .antMatchers("/api/login",
-                            "/api/register")
+                            "/api/register",
+                            "/api/resource/search",
+                            "/api/resource/type")
                 .permitAll()
                 .anyRequest().authenticated()
             .and()
