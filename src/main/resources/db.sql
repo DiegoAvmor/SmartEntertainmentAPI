@@ -20,7 +20,7 @@ CREATE TABLE `resource` (
 );
 
 CREATE TABLE `resource_types` (
-  `resoucer_type_id` int PRIMARY KEY AUTO_INCREMENT,
+  `resource_type_id` int PRIMARY KEY AUTO_INCREMENT,
   `name` varchar(255)
 );
 
