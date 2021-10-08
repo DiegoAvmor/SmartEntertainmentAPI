@@ -33,7 +33,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/login",
                             "/api/register",
                             "/api/resource/search",
-                            "/api/resource/type")
+                            "/api/resource/type",
+                            "/api/resource/status")
                 .permitAll()
                 .anyRequest().authenticated()
             .and()

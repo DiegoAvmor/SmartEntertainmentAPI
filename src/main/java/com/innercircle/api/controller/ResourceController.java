@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import com.innercircle.api.model.Resource;
 import com.innercircle.api.model.ResourceType;
+import com.innercircle.api.model.Status;
 import com.innercircle.api.model.UserResource;
 import com.innercircle.api.model.request.UserResourceRequest;
 import com.innercircle.api.service.ResourceService;
@@ -36,6 +37,11 @@ public class ResourceController {
     @GetMapping("/resource/type")
     public ResponseEntity<List<ResourceType>> getResourceTypes(){
         return ResponseEntity.ok().body(resourceService.getResourceTypes());
+    }
+
+    @GetMapping("/resource/status")
+    public ResponseEntity<List<Status>> getResourceStatus(){
+        return ResponseEntity.ok().body(resourceService.getResourceStatus());
     }
 
     @PostMapping("/resource/me/library")

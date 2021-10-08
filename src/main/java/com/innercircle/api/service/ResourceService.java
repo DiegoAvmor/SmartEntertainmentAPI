@@ -4,11 +4,13 @@ import java.util.List;
 
 import com.innercircle.api.model.Resource;
 import com.innercircle.api.model.ResourceType;
+import com.innercircle.api.model.Status;
 import com.innercircle.api.model.User;
 import com.innercircle.api.model.UserResource;
 import com.innercircle.api.model.request.UserResourceRequest;
 import com.innercircle.api.repository.ResourceRepository;
 import com.innercircle.api.repository.ResourceTypeRepository;
+import com.innercircle.api.repository.StatusRepository;
 import com.innercircle.api.repository.UserResourceRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +31,19 @@ public class ResourceService {
     @Autowired
     UserResourceRepository userResourceRepository;
 
+    @Autowired
+    StatusRepository statusRepository;
+
     public Page<Resource> searchResource(String name, Pageable pageable){
         return resourceRepository.findAllByNameContains(name, pageable);
     }
 
     public List<ResourceType> getResourceTypes(){
         return resourceTypeRepository.findAll();
+    }
+
+    public List<Status> getResourceStatus(){
+        return statusRepository.findAll();
     }
     
     public UserResource addResourceToUserLibrary(UserResourceRequest request){
