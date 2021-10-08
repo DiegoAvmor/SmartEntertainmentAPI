@@ -23,6 +23,7 @@ public class Resource {
     @JsonManagedReference
     private ResourceType resourceType;
 
+    @Column
     private String image_url;
 
     @Column
