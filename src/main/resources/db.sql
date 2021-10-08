@@ -25,6 +25,7 @@ CREATE TABLE `resource_types` (
 );
 
 CREATE TABLE `user_resources` (
+  `user_resource_id` int PRIMARY KEY AUTO_INCREMENT,
   `user_id` int,
   `resource_id` int,
   `status_id` int,
