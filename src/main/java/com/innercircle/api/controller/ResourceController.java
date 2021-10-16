@@ -14,6 +14,7 @@ import com.innercircle.api.service.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,9 +45,20 @@ public class ResourceController {
         return ResponseEntity.ok().body(resourceService.getResourceStatus());
     }
 
-    @PostMapping("/resource/me/library")
+    @PostMapping("/library/me/resource")
     public ResponseEntity<UserResource> register(@RequestBody @Valid UserResourceRequest request){
         return ResponseEntity.ok().body(resourceService.addResourceToUserLibrary(request));
     }
+
+    @GetMapping("/library/me/resource/{id}")
+    public ResponseEntity<UserResource> getUserResourceById(@PathVariable int id){
+        return ResponseEntity.ok().body(resourceService.findInUserLibraryByResourceId(id));
+    }
+
+    @GetMapping("/library/me/resource")
+    public Page<UserResource> getCurrentUserLibrary(Pageable pageable){
+        return resourceService.getCurrentUserLibrary(pageable);
+    }
+
     
 }

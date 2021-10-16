@@ -2,6 +2,7 @@ package com.innercircle.api.service;
 
 import java.util.List;
 
+import com.innercircle.api.exceptions.NotFoundException;
 import com.innercircle.api.model.Resource;
 import com.innercircle.api.model.ResourceType;
 import com.innercircle.api.model.Status;
@@ -72,5 +73,21 @@ public class ResourceService {
         userResourceRepository.save(userResource);
 
         return userResource;
+    }
+
+    public UserResource findInUserLibraryByResourceId(int resourceId){
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserResource  userResource = userResourceRepository.findByUserIdAndResourceId(user.getId(), resourceId);
+
+        if(userResource == null){
+            throw new NotFoundException();
+        }
+
+        return userResource;
+    }
+
+    public Page<UserResource> getCurrentUserLibrary(Pageable pageable){
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userResourceRepository.findAllByUserId(user.getId(), pageable);
     }
 }
