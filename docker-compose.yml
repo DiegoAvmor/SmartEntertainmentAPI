@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+
+  mysqldb:
+    image: mysql:latest
+    container_name: mysqldb2
+    environment:
+    # - MYSQL_USER= <name> en caso de que te pida
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3306:3306"
+
+  smartapi:
+    image: smartapi
+    container_name: smartapi_container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysqldb
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb2:3306/smart_entertainment_api?createDatabaseIfNotExist=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
