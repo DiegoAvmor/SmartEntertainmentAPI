@@ -1,13 +1,16 @@
 package com.innercircle.api.service;
 
 import java.util.List;
+import java.util.Optional;
 
+import com.innercircle.api.exceptions.AccessDeniedException;
 import com.innercircle.api.exceptions.NotFoundException;
 import com.innercircle.api.model.Resource;
 import com.innercircle.api.model.ResourceType;
 import com.innercircle.api.model.Status;
 import com.innercircle.api.model.User;
 import com.innercircle.api.model.UserResource;
+import com.innercircle.api.model.request.UserResourceLibraryRequest;
 import com.innercircle.api.model.request.UserResourceRequest;
 import com.innercircle.api.repository.ResourceRepository;
 import com.innercircle.api.repository.ResourceTypeRepository;
@@ -48,11 +51,11 @@ public class ResourceService {
     }
     
     public UserResource addResourceToUserLibrary(UserResourceRequest request){
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = getUserContext();
         //Si existe la entrada se procede a actualizarla
         UserResource userResource;
         if(userResourceRepository.existsByUserIdAndResourceId(user.getId(), request.getResource())){
-            userResource = userResourceRepository.findByUserIdAndResourceId(user.getId(), request.getResource());
+            userResource = findInLibraryByUserIdAndResourceId(user.getId(), request.getResource());
             userResource.setStatusId(request.getStatus());
             userResource.setFavorite(request.isFavorite());
             userResource.setStartedOn(request.getStarted_on());
@@ -76,18 +79,62 @@ public class ResourceService {
     }
 
     public UserResource findInUserLibraryByResourceId(int resourceId){
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserResource  userResource = userResourceRepository.findByUserIdAndResourceId(user.getId(), resourceId);
-
-        if(userResource == null){
-            throw new NotFoundException();
-        }
-
-        return userResource;
+        User user = getUserContext();
+        return findInLibraryByUserIdAndResourceId(user.getId(), resourceId);
     }
 
     public Page<UserResource> getCurrentUserLibrary(Pageable pageable){
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = getUserContext();
         return userResourceRepository.findAllByUserId(user.getId(), pageable);
+    }
+
+    public UserResource deleteResourceFromUserLibrary(int userResourceId){
+        UserResource userResource = findInLibraryByUserResourceId(userResourceId);
+        //Validamos si corresponde al usuario que hace la petición
+        if(!checkIfBelongsToUser(userResource.getUserId())){
+            throw new AccessDeniedException();
+        }
+        userResourceRepository.delete(userResource);
+        return userResource;
+    }
+
+    public UserResource updateUserResourceInfo(UserResourceLibraryRequest request, int userResourceId){
+        UserResource userResource = findInLibraryByUserResourceId(userResourceId);
+        //Validamos si corresponde al usuario que hace la petición
+        if(!checkIfBelongsToUser(userResource.getUserId())){
+            throw new AccessDeniedException();
+        }
+        userResource.setStatusId(request.getStatus());
+        userResource.setFavorite(request.isFavorite());
+        userResource.setStartedOn(request.getStarted_on());
+        userResource.setFinishedOn(request.getFinished_on());
+        userResource.setCurrentChapter(request.getCurrent_chapter());
+        userResourceRepository.save(userResource);
+        return userResource;
+    }
+
+    private UserResource findInLibraryByUserIdAndResourceId(int userId, int resourceId){
+        UserResource  userResource = userResourceRepository.findByUserIdAndResourceId(userId, resourceId);
+        if(userResource == null){
+            throw new NotFoundException();
+        }
+        return userResource;
+    }
+
+    private UserResource findInLibraryByUserResourceId(int userResourceId){
+        Optional<UserResource>  userResource = userResourceRepository.findById(userResourceId);
+        if(!userResource.isPresent()){
+            throw new NotFoundException();
+        }
+        return userResource.get();
+    }
+
+    private boolean checkIfBelongsToUser(int userId){
+        User user = getUserContext();
+        return user.getId().equals(userId);
+    }
+
+    private User getUserContext(){
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }
