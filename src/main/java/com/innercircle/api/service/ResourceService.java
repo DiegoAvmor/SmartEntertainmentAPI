@@ -51,6 +51,10 @@ public class ResourceService {
     }
     
     public UserResource addResourceToUserLibrary(UserResourceRequest request){
+        Optional<Resource> resource = resourceRepository.findById(request.getResource());
+        if(!resource.isPresent()){
+            throw new NotFoundException();
+        }
         User user = getUserContext();
         //Si existe la entrada se procede a actualizarla
         UserResource userResource;
