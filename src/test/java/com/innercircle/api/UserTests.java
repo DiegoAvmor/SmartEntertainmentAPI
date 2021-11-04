@@ -4,8 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.innercircle.api.model.request.LoginUserRequest;
 import com.innercircle.api.model.request.RegisterUserRequest;
 import com.innercircle.api.repository.UserRepository;
-
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
