@@ -5,10 +5,13 @@ import com.innercircle.api.model.User;
 import com.innercircle.api.model.dto.TokenDto;
 import com.innercircle.api.model.request.LoginUserRequest;
 import com.innercircle.api.model.request.RegisterUserRequest;
+import com.innercircle.api.model.request.UserUpdateRequest;
 import com.innercircle.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,6 +33,17 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody @Valid RegisterUserRequest request){
         return ResponseEntity.ok().body(userService.registerUser(request));
+    }
+
+    @PutMapping("/account/update")
+    public ResponseEntity<User> updateAccount(@RequestBody @Valid UserUpdateRequest request){
+        return ResponseEntity.ok().body(userService.updateUserInformation(request));
+    }
+
+    @DeleteMapping("/account/delete")
+    public ResponseEntity<User> deleteAccount(){
+        userService.deleteUserInformation();
+        return ResponseEntity.status(204).body(userService.deleteUserInformation());
     }
     
 }

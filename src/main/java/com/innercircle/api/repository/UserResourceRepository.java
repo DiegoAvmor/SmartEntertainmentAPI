@@ -1,5 +1,7 @@
 package com.innercircle.api.repository;
 
+import java.util.List;
+
 import com.innercircle.api.model.UserResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,4 +17,6 @@ public interface UserResourceRepository extends JpaRepository<UserResource, Inte
     public UserResource findByUserIdAndResourceId(int user_id, int resource_id);
 
     public Page<UserResource> findAllByUserId(int user_id, Pageable pageable);
+
+    public void deleteAllByUserId(int user_id);
 }
