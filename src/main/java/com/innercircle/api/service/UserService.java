@@ -7,17 +7,24 @@ import com.innercircle.api.model.User;
 import com.innercircle.api.model.dto.TokenDto;
 import com.innercircle.api.model.request.LoginUserRequest;
 import com.innercircle.api.model.request.RegisterUserRequest;
+import com.innercircle.api.model.request.UserUpdateRequest;
 import com.innercircle.api.repository.UserRepository;
+import com.innercircle.api.repository.UserResourceRepository;
 import com.innercircle.api.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class UserService{
 
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserResourceRepository userResourceRepository;
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
@@ -47,6 +54,36 @@ public class UserService{
             return nuevoUser;
         }
         throw new AlreadyRegistered("Ya existe una cuenta asociada a ese correo");
+    }
+
+    public User updateUserInformation(UserUpdateRequest request){
+        //We obtained the current user logged in the session
+        User userLogged = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Optional<User> user = userRepository.findByEmail(userLogged.getEmail());
+
+        if (user.isPresent()) {
+            User updatedUser = user.get();
+            updatedUser.setName(request.getName());
+            updatedUser.setPassword(request.getPassword());
+            userRepository.save(updatedUser);
+            return updatedUser;
+        }
+        throw new NotFoundException("El usuario no existe");
+    }
+
+    public User deleteUserInformation(){
+        User userLogged = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<User> user = userRepository.findByEmail(userLogged.getEmail());
+
+        if (user.isPresent()) {
+            User currentUser = user.get();
+            //We delete all resources associated to the user and the we remove de usar from the db
+            userResourceRepository.deleteAllByUserId(currentUser.getId());
+            userRepository.delete(currentUser);
+            return currentUser;
+        }
+        throw new NotFoundException("El usuario no existe");
     }
        
 }
